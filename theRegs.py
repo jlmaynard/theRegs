@@ -40,7 +40,7 @@ def parse_data():
     # Cleans up the data and calculates the differences
     pattern = '(\d+\.\d+)|(\d+)'
 
-    # print 'Checking density ranges (Nylon +/- 0.1%), (Al +/- 2.0%)'
+    # print 'Checking density ranges (N +/- 0.1%), (A +/- 2.0%)'
     ny_measured = float(re.search(pattern, ny[0]).group())
     ny_exp = float(re.search(pattern, ny[1]).group())
     ny_diff = (ny_exp - ny_measured) / ny_exp
