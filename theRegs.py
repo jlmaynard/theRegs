@@ -58,14 +58,7 @@ def parse_data():
         if m is not None:
             scaling = l
 
-    # If values are within 5% of each other then perform the correction. If
-    # not there is probably a bigger issue to reslove.
-    if al_diff - ny_diff < .05:
-        print "Values agree on percent difference."
-        # Parse the scaling value
-        scaling = float(re.search('\d+\.\d+E\d+', scaling).group())
-    else:
-        print "STOP - Density values too far off target! Check system."
+    scaling = float(re.search('\d+\.\d+E\d+', scaling).group())
 
     # Return a dictionary of values
     the_data = {'ny_measured': ny_measured,
