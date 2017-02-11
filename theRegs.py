@@ -112,10 +112,10 @@ def update_scale(the_data):
 
     # Calculate the new value by adjusting based on the % diff ny
     # This does work. 
-    new_oscale = the_data['Scaling'] * (1 + the_data['ny_diff'])
+    new_scale = the_data['Scaling'] * (1 + the_data['ny_diff'])
 
     # Format the value into the string
-    sub_string = '{0:.3E}'.format(new_oscale)
+    sub_string = '{0:.3E}'.format(new_scale)
     # Strip the new line to match the iniFile.ini file formatting
     # TODO: not sure how to get python to format to drop the '+0' ?
     sub_string = sub_string.replace('+0', '')
