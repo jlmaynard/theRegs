@@ -1,10 +1,11 @@
 # fileName: otheRegs.py
 # Demonstrates regular expressions to locate and change key input parameter.
+# This is an example of a script that pulls data, does work, then writes data.
 # 
 # J. Maynard 01/26/17
 
 # Input: "iniFile.ini", "logFile.log"
-# Output: Will update the scale parameter in the "iniFile.ini" file. 
+# Output: Will update a scale parameter in the "iniFile.ini" file. 
 
 import re
 from shutil import copyfile
@@ -29,22 +30,24 @@ def parse_data():
     print '\nParsing data from logFile.log and iniFile.ini files.'
     last_line = file(logFile_path, "r").readlines()[-1]
 
-    # Extract the densities from the last line
+    # Extracts 2 density values from the last line
     pattern = '{density=\d+\.\d+ exp=\d+'
     density = re.findall(pattern, last_line)
 
-    # Splits them up by ny and al
-    ny = re.split(' ', density[0])
-    al = re.split(' ', density[1])
+    # Splits up the density values because there are 2 of them
+    ny = re.split(' ', density[0])  # first one
+    al = re.split(' ', density[1])  # second one
 
+    # Does some work
     # Cleans up the data and calculates the differences
     pattern = '(\d+\.\d+)|(\d+)'
 
-    # print 'Checking density ranges (N +/- 0.1%), (A +/- 2.0%)'
+    # Compares values for ny
     ny_measured = float(re.search(pattern, ny[0]).group())
     ny_exp = float(re.search(pattern, ny[1]).group())
     ny_diff = (ny_exp - ny_measured) / ny_exp
 
+    # Compares values for al
     al_measured = float(re.search(pattern, al[0]).group())
     al_exp = float(re.search(pattern, al[1]).group())
     al_diff = (al_exp - al_measured) / al_exp
@@ -52,12 +55,17 @@ def parse_data():
     # Scaling ------------------------------------------------------------------
     # Read the iniFile.ini file and get the curren Scaling value
     lines = file(iniFile_path, "r").readlines()
+    
+    # Sets a default
     scaling = 'ERROR: no match'
+    
+    # Finds the match for Scaling
     for l in lines:
         m = re.match('Scaling', l)
         if m is not None:
             scaling = l
 
+    # More parsing and converts to a number
     scaling = float(re.search('\d+\.\d+E\d+', scaling).group())
 
     # Return a dictionary of values
@@ -70,13 +78,15 @@ def parse_data():
                 'Scaling': scaling}
 
     return the_data
+# We now have the data
 
 
 def print_data(the_data):
+    """Function for printing the data"""
 
     print '--------------------------------------------------------------------'
     outscaling = '{0:.3E}'.format(the_data['Scaling'])
-    # Strip the new line to match the dpp.ini file formatting
+    # Strip the new line to match the nasty ini file formatting
     old_value = outscaling.replace('+0', '')
     print 'Parsed Scaling value = ', old_value
 
@@ -100,7 +110,8 @@ def update_scale(the_data):
     newname = 'ini_backup_' + dt + '.ini'
     copyfile("iniFile.ini", newname)
 
-    # Calculate the new outscaling by adjusting based on the % diff ny
+    # Calculate the new value by adjusting based on the % diff ny
+    # This does work. 
     new_oscale = the_data['Scaling'] * (1 + the_data['ny_diff'])
 
     # Format the value into the string
@@ -114,28 +125,23 @@ def update_scale(the_data):
     print '\nCorrected scaling value = ', sub_string
     print "Writing new Scaling value to iniFile.ini file."
 
-    # Write the iniFile.ini file with the new line
+    # Write the iniFile.ini file with the new line -----------------------------
     # Read the file into a string
     the_file = open(iniFile_path, 'r')
     file_string = the_file.read()
     the_file.close()
 
-    # Replace Scaling wiht new value
+    # Replace old value with the new value
     pattern = "Scaling = \d+\.\d+E\d+"
     file_string = (re.sub(pattern, sub_string, file_string))
 
-    # Write the file back with new Scaling value
+    # Write the file back with new value
     the_file = open(iniFile_path, 'w')
     the_file.write(file_string)
     the_file.close()
 
-
-def first_pass():
-    """This is the main function and performs the bulk of the work."""
+if __name__ == "__main__":
     the_data = parse_data()
     print_data(the_data)
-    update_scale(the_data)
-
-if __name__ == "__main__":
-    first_pass()
+    update_scale(the_data)    
 
