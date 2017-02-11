@@ -14,7 +14,7 @@ import datetime
 DEBUG = True
 
 # Set the path to the files. Assumes the files are in local directory
-# during debugging. 
+# during debugging. Real paths can be added here when the time is right. 
 
 if DEBUG is True:
     logFile_path = "logFile.log"
@@ -23,7 +23,7 @@ if DEBUG is True:
 # live paths here
 
 def parse_data():
-    """Grabs the measured and expected density for n and a from
+    """Grabs the values for n and a from
     the logFile.log file and gets current Scaling from the iniFile.ini file."""
 
     print '\nParsing data from logFile.log and iniFile.ini files.'
@@ -49,7 +49,7 @@ def parse_data():
     al_exp = float(re.search(pattern, al[1]).group())
     al_diff = (al_exp - al_measured) / al_exp
 
-    # outScaling ---------------------------------------------------------------
+    # Scaling ------------------------------------------------------------------
     # Read the iniFile.ini file and get the curren Scaling value
     lines = file(iniFile_path, "r").readlines()
     scaling = 'ERROR: no match'
@@ -58,14 +58,14 @@ def parse_data():
         if m is not None:
             scaling = l
 
-    # If ny and al are within 5% of each other then perform the correction. If
+    # If values are within 5% of each other then perform the correction. If
     # not there is probably a bigger issue to reslove.
     if al_diff - ny_diff < .05:
         print "Values agree on percent difference."
         # Parse the scaling value
         scaling = float(re.search('\d+\.\d+E\d+', scaling).group())
     else:
-        print "STOP - Density values too far off target! Check system HW."
+        print "STOP - Density values too far off target! Check system."
 
     # Return a dictionary of values
     the_data = {'ny_measured': ny_measured,
@@ -97,7 +97,7 @@ def print_data(the_data):
     print '--------------------------------------------------------------------'
 
 
-def update_oscale(the_data):
+def update_scale(the_data):
     """Back up the original file and writes the new value to the
     iniFile.ini file"""
 
@@ -141,35 +141,8 @@ def first_pass():
     """This is the main function and performs the bulk of the work."""
     the_data = parse_data()
     print_data(the_data)
-    update_oscale(the_data)
+    update_scale(the_data)
 
-
-def second_pass():
-    """We run this as a final check after running it again."""
-    the_data = parse_data()
-
-    # Test values to ensure N is within 0.1% and A is within 2.0%
-    if (the_data['ny_diff'] <= 0.001) and (the_data['al_diff'] <= .02):
-        print "\nScaling adjustment complete! Final values are:\n"
-        print_data(the_data)
-    else:
-        print "STOP - Density values still off."
-
-
-# Run the main() if this is the main file. -------------------------------------
 if __name__ == "__main__":
-
-    # Run the first pass and update outscaling
     first_pass()
 
-    # Now run OTK again with new outScaling and re-test to ensure that
-    # AL stays within range.
-    print "\nACTION REQUIRED: Run it again to verify new values."
-    test = raw_input("=> Ready to test new values after running it "
-                     "with updated Scaling (Y/N)? ").lower()
-    if test == "y":
-        second_pass()
-    else:
-        print "TEST NOT COMPLETE - START OVER!"
-
-# End main() -------------------------------------------------------------------
