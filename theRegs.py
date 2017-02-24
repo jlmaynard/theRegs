@@ -85,9 +85,9 @@ def print_data(the_data):
     """Function for printing the data"""
 
     print '--------------------------------------------------------------------'
-    outscaling = '{0:.3E}'.format(the_data['Scaling'])
+    the_scaling = '{0:.3E}'.format(the_data['Scaling'])
     # Strip the new line to match the nasty ini file formatting
-    old_value = outscaling.replace('+0', '')
+    old_value = the_scaling.replace('+0', '')
     print 'Parsed Scaling value = ', old_value
 
     print '\nN measured = {0:.2f}'.format(the_data['ny_measured'])
