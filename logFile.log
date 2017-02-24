@@ -1,2 +1,2 @@
-{density=1.2 exp=1.2 tol=7 f}{m=1 exp=13 tol=7 p}{density=1.2 exp=1.2 tol=7 f}
-{density=1.1 exp=1.0 tol=7 f}{m=1 exp=13 tol=7 p}{density=1.2 exp=1.2 tol=7 f}
+{whatimlookingfor=1.2 exp=1.2 tol=7 f}{m=1 exp=13 tol=7 p}{whatimlookingfor=1.2 exp=1.2 tol=7 f}
+{whatimlookingfor=1.1 exp=1.0 tol=7 f}{m=1 exp=13 tol=7 p}{whatimlookingfor=1.2 exp=1.2 tol=7 f}
