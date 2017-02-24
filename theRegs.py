@@ -30,13 +30,13 @@ def parse_data():
     print '\nParsing data from logFile.log and iniFile.ini files.'
     last_line = file(logFile_path, "r").readlines()[-1]
 
-    # Extracts 2 density values from the last line
-    pattern = '{density=\d+\.\d+ exp=\d+'
-    density = re.findall(pattern, last_line)
+    # Extracts 2 whatimlookingfor values from the last line
+    pattern = '{whatimlookingfor=\d+\.\d+ exp=\d+'
+    whatimlookingfor = re.findall(pattern, last_line)
 
-    # Splits up the density values because there are 2 of them
-    ny = re.split(' ', density[0])  # first one
-    al = re.split(' ', density[1])  # second one
+    # Splits up the whatimlookingfor values because there are 2 of them
+    ny = re.split(' ', whatimlookingfor[0])  # first one
+    al = re.split(' ', whatimlookingfor[1])  # second one
 
     # Does some work
     # Cleans up the data and calculates the differences
